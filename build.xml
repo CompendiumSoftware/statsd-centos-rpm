@@ -25,7 +25,6 @@
 			<arg line="https://github.com/etsy/statsd/archive/v0.6.0.tar.gz"/>
 			<arg line="${rpm_source}"/>
 		</exec>
-		<tar destfile="${rpm_source}" basedir="${env.WORKSPACE}" compression="gzip" longfile="gnu"/>
                 <concat destfile="${rpm_spec}">
 			<header trimleading="yes">
 				%define ci_build_number ${env.BUILD_NUMBER}
