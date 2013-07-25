@@ -23,6 +23,7 @@
 		<exec executable="rpmdev-setuptree" />
 		<exec executable="wget"  >
 			<arg line="https://github.com/etsy/statsd/archive/v0.6.0.tar.gz"/>
+			<arg line="-O"/>
 			<arg line="${rpm_source}"/>
 		</exec>
                 <concat destfile="${rpm_spec}">
