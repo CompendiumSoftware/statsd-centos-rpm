@@ -1,18 +1,18 @@
 Name:           statsd
 Version:        0.6.0
-Release:        1%{?dist}
+Release:        %{ci_build_number}
 Summary:        monitoring daemon, that aggregates events received by udp in 10 second intervals
 Group:          Applications/Internet
 License:        Etsy open source license
-URL:            https://github.com/renecunningham/statsd-rpm
-Vendor:         Etsy
-Packager:       Rene Cunningham <rene@compounddata.com>
+URL:            https://github.com/CompendiumSoftware/statsd-rpm
+Vendor:         Compendium
+Packager:       Stephen Gregory <sgregory@compendium.com>
 Source0:        %{name}-%{version}.tar.gz
 Source1:	statsd-init.d
 Source2:	config.js
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch:      noarch
-Requires:       nodejs
+Requires:       nodejs,npm
 
 %description
 Simple daemon for easy stats aggregation  
@@ -37,6 +37,7 @@ Simple daemon for easy stats aggregation
 %{__mkdir_p} %{buildroot}%{_localstatedir}/lock/subsys
 touch %{buildroot}%{_localstatedir}/lock/subsys/%{name}
 
+
 %pre
 getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || \
@@ -49,6 +50,7 @@ service %{name} stop
 exit 0
 
 %postun
+
 if [ $1 = 0 ]; then
 	chkconfig --del %{name}
 	getent passwd %{name} >/dev/null && \
@@ -57,8 +59,11 @@ fi
 exit 0
 
 %post
+cd /usr/share/statsd
+npm install statsd-instrumental-backend
 chkconfig --add %{name}
 service %{name} start
+
 
 %clean
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
@@ -75,5 +80,7 @@ service %{name} start
 %ghost %{_localstatedir}/lock/subsys/%{name}
 
 %changelog
+* Thu Jul 25 2013 Stephen Gregory <sgregory@compenidum.com> 0.6.0
+- customization for compendium
 * Sun Jun 10 2012 Rene Cunningham <rene@compounddata.com> 0.3.0-1
 - initial build
