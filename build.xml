@@ -1,0 +1,54 @@
+<project name="statsd" default="build" basedir=".">
+	<property file="build.properties"/>
+	<property environment="env"/>
+	<property name="rpm_spec" value="${env.HOME}/rpmbuild/SPECS/statsd.spec"/>
+	<property name="rpm_source" value="${env.HOME}/rpmbuild/SOURCES/statsd-0.6.0.tar.gz"/>
+	<exec dir="." executable="uname" outputproperty="rpm_arch" failonerror="true">
+		<arg line="-m"/>
+	</exec>
+	<exec dir="." executable="sh" outputproperty="rpm_dist" failonerror="true"
+		inputstring="grep %dist /etc/rpm/macros.dist |awk '{print $2'}"/>
+	<property name="rpm_srcrpmdir" value="${env.HOME}/rpmbuild/SPECS"/>
+	<property name="rpm_rpmdir" value="${env.HOME}/rpmbuild/RPMS/${rpm_arch}"/>
+
+	<target name="clean">
+		<delete dir="${basedir}/build"/>
+		<mkdir dir="${rpm_srcrpmdir}"/>
+		<mkdir dir="${rpm_rpmdir}"/>
+	</target>
+
+	<target name="build" depends="clean"/>
+
+	<target name="package" depends="build">
+		<exec executable="rpmdev-setuptree" />
+		<exec executable="wget https://github.com/etsy/statsd/archive/v0.6.0.tar.gz  ${rpm_source}" />
+		<tar destfile="${rpm_source}" basedir="${env.WORKSPACE}" compression="gzip" longfile="gnu"/>
+                <concat destfile="${rpm_spec}">
+			<header trimleading="yes">
+				%define ci_build_number ${env.BUILD_NUMBER}
+				%define ci_build_id ${env.BUILD_ID}
+				%define ci_job_name ${env.JOB_NAME}
+				%define ci_build_tag ${env.BUILD_TAG}
+				%define ci_workspace ${env.WORKSPACE}
+			</header>
+                        <fileset file="${env.WORKSPACE}/statsd.spec.in"/>
+                </concat>
+		<exec executable="rpmbuild" failonerror="true">
+			<arg line="--define '_srcrpmdir ${rpm_srcrpmdir}'"/>
+			<arg line="-bs ${rpm_spec}"/>
+		</exec>
+	</target>
+
+	<target name="package-build" depends="package">
+		<exec executable="rpmbuild" failonerror="true">
+			<arg line="--define '_srcrpmdir ${rpm_srcrpmdir}'"/>
+			<arg line="--define '_rpmdir ${rpm_rpmdir}'"/>
+			<arg line="--define '_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm'"/>
+			<arg line="-ba ${rpm_spec}"/>
+		</exec>
+	</target>
+	
+	<target name="build-all" depends="build,package,package-build"/>
+
+</project>
+
