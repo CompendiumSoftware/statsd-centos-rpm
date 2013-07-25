@@ -28,7 +28,7 @@
 		</exec>
 
 		<exec executable="echo"  >
-			<arg line="ws: ${env.WORKSPACE} base:${basedir} rpmspec:${rpm_spec}"/>
+			<arg line="ws: ${env.WORKSPACE} base:${basedir} rpmspec:${rpm_spec} rpmsrc:${rpm_source}"/>
 		</exec>
                 <concat destfile="${rpm_spec}">
 			<header trimleading="yes">
@@ -38,7 +38,7 @@
 				%define ci_build_tag ${env.BUILD_TAG}
 				%define ci_workspace ${env.WORKSPACE}
 			</header>
-                        <fileset file="${env.WORKSPACE}/statsd.spec.in"/>
+                        <fileset file="${env.WORKSPACE}/spec/statsd.spec.in"/>
                 </concat>
 		<exec executable="rpmbuild" failonerror="true">
 			<arg line="-bs ${rpm_spec}"/>
