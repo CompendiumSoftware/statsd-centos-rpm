@@ -28,7 +28,7 @@
 		</exec>
 
 		<exec executable="echo"  >
-			<arg line="${env.WORKSPACE} ${basedir}"/>
+			<arg line="${env.WORKSPACE} ${basedir} ${rpm_spec}"/>
 			<arg line="-O"/>
 			<arg line="${rpm_source}"/>
 		</exec>
