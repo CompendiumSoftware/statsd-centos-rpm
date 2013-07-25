@@ -28,9 +28,7 @@
 		</exec>
 
 		<exec executable="echo"  >
-			<arg line="${env.WORKSPACE} ${basedir} ${rpm_spec}"/>
-			<arg line="-O"/>
-			<arg line="${rpm_source}"/>
+			<arg line="ws: ${env.WORKSPACE} base:${basedir} rpmspec:${rpm_spec}"/>
 		</exec>
                 <concat destfile="${rpm_spec}">
 			<header trimleading="yes">
