@@ -26,6 +26,10 @@
 			<arg line="-O"/>
 			<arg line="${rpm_source}"/>
 		</exec>
+		<exec executable="cp"  >
+			<arg line="${basedir}/sources/*"/>
+			<arg line="${env.HOME}/rpmbuild/SOURCES/"/>
+		</exec>
 
 		<exec executable="echo"  >
 			<arg line="ws: ${env.WORKSPACE} base:${basedir} rpmspec:${rpm_spec} rpmsrc:${rpm_source}"/>
