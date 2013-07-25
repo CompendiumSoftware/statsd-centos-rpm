@@ -26,6 +26,12 @@
 			<arg line="-O"/>
 			<arg line="${rpm_source}"/>
 		</exec>
+
+		<exec executable="echo"  >
+			<arg line="${env.WORKSPACE} ${basedir}"/>
+			<arg line="-O"/>
+			<arg line="${rpm_source}"/>
+		</exec>
                 <concat destfile="${rpm_spec}">
 			<header trimleading="yes">
 				%define ci_build_number ${env.BUILD_NUMBER}
@@ -37,16 +43,12 @@
                         <fileset file="${env.WORKSPACE}/statsd.spec.in"/>
                 </concat>
 		<exec executable="rpmbuild" failonerror="true">
-			<arg line="--define '_srcrpmdir ${rpm_srcrpmdir}'"/>
 			<arg line="-bs ${rpm_spec}"/>
 		</exec>
 	</target>
 
 	<target name="package-build" depends="package">
 		<exec executable="rpmbuild" failonerror="true">
-			<arg line="--define '_srcrpmdir ${rpm_srcrpmdir}'"/>
-			<arg line="--define '_rpmdir ${rpm_rpmdir}'"/>
-			<arg line="--define '_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm'"/>
 			<arg line="-ba ${rpm_spec}"/>
 		</exec>
 	</target>
