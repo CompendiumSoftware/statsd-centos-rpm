@@ -12,7 +12,7 @@ Source1:	statsd-init.d
 Source2:	config.js
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch:      noarch
-Requires:       nodejs,npm
+Requires:       nodejs
 
 %description
 Simple daemon for easy stats aggregation  
